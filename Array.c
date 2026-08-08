@@ -11,6 +11,11 @@ struct MatInt{
     struct ArrInt* matriz;
 };
 
+
+int ArrIntLee(struct ArrInt* arr, int indice){
+    return((*arr).arreglo[indice]);
+}
+
 void ArrIntIni(struct ArrInt* arr, int longitud){
     (*arr).longitud = longitud;
     (*arr).arreglo = calloc(longitud, longitud * sizeof(int));
@@ -18,10 +23,6 @@ void ArrIntIni(struct ArrInt* arr, int longitud){
 
 void ArrIntAsi(struct ArrInt* arr, int indice, int valor){
     (*arr).arreglo[indice] = valor;
-}
-
-int ArrIntLee(struct ArrInt* arr, int indice){
-    return((*arr).arreglo[indice]);
 }
 
 void ArrIntLle(struct ArrInt* arr){
@@ -45,6 +46,7 @@ void ArrIntImp(struct ArrInt* arr){
         printf("El valor %d de su arreglo es igual a %d\n", i+1, ArrIntLee(arr, i));
     }
 }
+
 
 void MatIntIni(struct MatInt* mat, int longitud){
     int i;
@@ -70,6 +72,7 @@ void MatIntImp(struct MatInt* mat){
         printf("\n");
     }
 }
+
 
 int main(){
     struct MatInt a;
