@@ -2,9 +2,6 @@
 #include <time.h>
 #include <math.h>
 
-
-struct ArrayChar
-
 int main(){
     int contador = 0;
     double ahora;

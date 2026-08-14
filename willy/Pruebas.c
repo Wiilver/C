@@ -1,80 +1,110 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct ArrInt{
+struct Array{
     int longitud;
-    int* arreglo;
+    void* arreglo;
+    char tipo;
 };
 
-struct MatInt{
-    int longitud;
-    struct ArrInt* matriz;
-};
-
-void ArrIntIni(struct ArrInt* arr, int longitud){
+int ArrayIni(struct Array* arr, int longitud, char tipo){
+    int espacio;
     (*arr).longitud = longitud;
-    (*arr).arreglo = calloc(longitud, longitud * sizeof(int));
-}
-
-void ArrIntAsi(struct ArrInt* arr, int indice, int valor){
-    (*arr).arreglo[indice] = valor;
-}
-
-int ArrIntLee(struct ArrInt* arr, int indice){
-    return((*arr).arreglo[indice]);
-}
-
-void ArrIntLle(struct ArrInt* arr){
-    int i, resp;
-    for(i = 0; i < (*arr).longitud; i++){
-        printf("Ingrese el valor que le quiera dar a su arreglo en el indice %d : ", i+1);
-        scanf("%d", &resp);
-        ArrIntAsi(arr, i, resp);
-        printf("\n");
+    /* Hay un problema llamado no quiero agregarle letras a esto, pero falta long long, long double */
+    switch(tipo){
+        case 'I':
+            espacio = (longitud * sizeof(int));
+            break;
+        case 'D':
+            espacio = (longitud * sizeof(double));
+            break;
+        case 'F':
+            espacio = (longitud * sizeof(float));
+            break;
+        case 'L':
+            espacio = (longitud * sizeof(long long));
+            break;
+        case 'S':
+            espacio = (longitud * sizeof(short));
+            break;
+        case 'C':
+            espacio = (longitud * sizeof(char));
+            break;
+        default:
+            return 1;
     }
+    (*arr).tipo = tipo;
+    (*arr).arreglo = calloc(longitud, espacio);
+    if((*arr).arreglo == NULL) return 1;
+    return 0;
 }
 
-void ArrIntRel(struct ArrInt* arr, int valor){
+void ArrayImp(struct Array* arr){
     int i;
-    for(int i = 0; i < (*arr).longitud; i++) (*arr).arreglo[i] = valor;
+    switch((*arr).tipo){
+        case 'I':
+            int* pi = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %d\n", i+1, pi[i]);
+            break;
+        case 'D':
+            double* pd = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %f\n", i+1, pd[i]);
+            break;
+        case 'F':
+            float* pf = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %f\n", i+1, pf[i]);
+            break;
+        case 'L':
+            long long* pl = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %lld\n", i+1, pl[i]);
+            break;
+        case 'S':
+            short* ps = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %hd\n", i+1, ps[i]);
+            break;
+        case 'C':
+            char* pc = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %c\n", i+1, pc[i]);
+            break;
+    }
+    printf("\n");
 }
 
-void ArrIntImp(struct ArrInt* arr){
+void ArrayLLe(struct Array* arr){
     int i;
-    for(i = 0; i < (*arr).longitud; i++){
-        printf("El valor %d de su arreglo es igual a %d\n", i+1, ArrIntLee(arr, i));
+    switch((*arr).tipo){
+        case 'I':
+            int* pi = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) pi[i] = 2147483645;
+            break;
+        case 'D':
+            double* pd = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) pd[i] = 123.456789123455;
+            break;
+        case 'F':
+            float* pf = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) pf[i] = 123.456788;
+            break;
+        case 'L':
+            long long* pl = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) pl[i] = 922337203685477581;
+            break;
+        case 'S':
+            short* ps = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) ps[i] = 32767;
+            break;
+        case 'C':
+            char* pc = (*arr).arreglo;
+            for(i = 0; i < (*arr).longitud; i++) pc[i] = 'A';
+            break;
     }
 }
 
-void MatIntIni(struct MatInt* mat, int longitud){
-    int i;
-    struct ArrInt dummy;
-    ArrIntIni(&dummy, longitud);
-    (*mat).longitud = longitud;
-    (*mat).matriz = calloc(longitud, longitud * sizeof(struct MatInt) + longitud * sizeof(dummy.arreglo[0]));
-
-    for(i = 0; i < longitud; i++){
-        struct ArrInt temp;
-        ArrIntIni(&temp, longitud);
-        ArrIntRel(&temp, i);
-        (*mat).matriz[i] = temp;
-    }
-}
-
-void MatIntImp(struct MatInt* mat){
-    int i,j;
-    for(i = 0; i < (*mat).longitud; i++){
-        for(j = 0; j < (*mat).matriz[i].longitud; j++){
-            printf(" %d ", (*mat).matriz[i].arreglo[j]);
-        }
-        printf("\n");
-    }
-}
 
 int main(){
-    struct MatInt a;
-    MatIntIni(&a, 5);
-    a.matriz[0].arreglo[0] = 8;
-    MatIntImp(&a);
+    struct Array a;
+    ArrayIni(&a, 5, 'S');
+    ArrayLLe(&a);
+    ArrayImp(&a);
     return 0;
 }

@@ -1,110 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Array{
+//Para errores
+
+int checarNulo(void* ptr){
+    return (ptr==NULL);
+}
+
+int checarIndice(int indice, int longitud){
+    return ((indice >= longitud)||indice < 0);
+}
+
+//Estan mal los punteros
+struct Arreglo{
     int longitud;
-    void* arreglo;
-    char tipo;
+    void *arreglo;
+    int (*iniciar)(void*, int);
+    int (*imprimir)(void*, int, int);
 };
 
-int ArrayIni(struct Array* arr, int longitud, char tipo){
-    int espacio;
-    (*arr).longitud = longitud;
-    /* Hay un problema llamado no quiero agregarle letras a esto, pero falta long long, long double */
-    switch(tipo){
-        case 'I':
-            espacio = (longitud * sizeof(int));
-            break;
-        case 'D':
-            espacio = (longitud * sizeof(double));
-            break;
-        case 'F':
-            espacio = (longitud * sizeof(float));
-            break;
-        case 'L':
-            espacio = (longitud * sizeof(long long));
-            break;
-        case 'S':
-            espacio = (longitud * sizeof(short));
-            break;
-        case 'C':
-            espacio = (longitud * sizeof(char));
-            break;
-        default:
-            return 1;
-    }
-    (*arr).tipo = tipo;
-    (*arr).arreglo = calloc(longitud, espacio);
-    if((*arr).arreglo == NULL) return 1;
+//Enteros
+int intIni(void* arr, int longitud){
+    arr = calloc(longitud, sizeof(int));
+    return checarNulo(arr);
+}
+
+int intImp(void* arr, int indice, int longitud){
+    if(checarIndice(indice, longitud)) return 1;
+    int *p = arr;
+    printf("El valor %d de tu arreglo es igual a : %d\n", indice, p[indice]);
     return 0;
 }
 
-void ArrayImp(struct Array* arr){
-    int i;
-    switch((*arr).tipo){
-        case 'I':
-            int* pi = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %d\n", i+1, pi[i]);
-            break;
-        case 'D':
-            double* pd = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %f\n", i+1, pd[i]);
-            break;
-        case 'F':
-            float* pf = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %f\n", i+1, pf[i]);
-            break;
-        case 'L':
-            long long* pl = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %lld\n", i+1, pl[i]);
-            break;
-        case 'S':
-            short* ps = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %hd\n", i+1, ps[i]);
-            break;
-        case 'C':
-            char* pc = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) printf("El valor numero %d de su arreglo es : %c\n", i+1, pc[i]);
-            break;
-    }
-    printf("\n");
+//Dobles
+int dobIni(void* arr, int longitud){
+    arr = calloc(longitud, sizeof(double));
+    return checarNulo(arr);
 }
 
-void ArrayLLe(struct Array* arr){
-    int i;
-    switch((*arr).tipo){
-        case 'I':
-            int* pi = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) pi[i] = 2147483645;
-            break;
-        case 'D':
-            double* pd = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) pd[i] = 123.456789123455;
-            break;
-        case 'F':
-            float* pf = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) pf[i] = 123.456788;
-            break;
-        case 'L':
-            long long* pl = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) pl[i] = 922337203685477581;
-            break;
-        case 'S':
-            short* ps = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) ps[i] = 32767;
-            break;
-        case 'C':
-            char* pc = (*arr).arreglo;
-            for(i = 0; i < (*arr).longitud; i++) pc[i] = 'A';
-            break;
-    }
+int dobImp(void* arr, int indice, int longitud){
+    if(checarIndice(indice, longitud)) return 1;
+    double *p = arr;
+    printf("El valor %d de tu arreglo es igual a : %lf\n", indice, p[indice]);
+    return 0;
 }
-
 
 int main(){
-    struct Array a;
-    ArrayIni(&a, 5, 'S');
-    ArrayLLe(&a);
-    ArrayImp(&a);
+    struct Arreglo enteros;    
+    struct Arreglo dobles;    
+
+    enteros.longitud = 5;
+    dobles.longitud = 5;
+
+    enteros.iniciar = intIni;
+    enteros.imprimir = intImp;
+    
+    dobles.iniciar = dobIni;
+    dobles.imprimir = dobImp;
+
+    enteros.iniciar(&enteros.arreglo, enteros.longitud);
+    dobles.iniciar(&dobles.arreglo, dobles.longitud);
+
+    enteros.imprimir(&enteros.arreglo, 0, enteros.longitud);
+    dobles.imprimir(&dobles.arreglo, 0, dobles.longitud);
+
+
     return 0;
 }
