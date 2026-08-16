@@ -2,18 +2,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
-/*
-    Hay un problema con la naturaleza en si de la distincion entre arreglos,
-    deberia de replantear el codigo para que, en vez de tener una plantilla
-    para cada tipo, tener las funciones indicadas para hacer cada cosa, creo
-*/
+//Podria hacer que la funcion imprimir formara parte de Arreglo, pero seria raro
 
 //Genericos
 struct Arreglo{
-    void* arreglo;
     int longitud;
     int tama;
     char tipo;
+    void* arreglo;
 };
 
 void iniciar(struct Arreglo* arr, int longitud, char tipo){
